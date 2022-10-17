@@ -2,7 +2,16 @@
   "name": "cinetry-api",
   "version": "1.0.0",
   "scripts": {
-    "ls:deploy": "serverless deploy --stage local --verbose"
+    "ls:deploy": "serverless deploy --stage local --verbose",
+    "test": "NODE_ENV=test jest --silent --detectOpenHandles --colors --forceExit",
+    "test:verbose": "npm run test -- --no-silent",
+    "db:migrate": "knex migrate:latest",
+    "db:rollback": "knex migrate:rollback",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "prepare": "husky install",
+    "pretest": "npm run db:migrate",
+    "posttest": "npm run db:rollback"
   },
   "engines": {
     "node": ">=16.0"
@@ -15,8 +24,20 @@
     "pg": "^8.8.0"
   },
   "devDependencies": {
+    "eslint": "^8.25.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-jest": "^27.1.2",
+    "eslint-plugin-node": "^11.1.0",
+    "husky": "^8.0.1",
+    "jest": "^29.2.0",
+    "lint-staged": "^13.0.3",
+    "nock": "^13.2.9",
     "serverless": "^3.0.0",
     "serverless-localstack": "^1.0.1"
+  },
+  "lint-staged": {
+    "*.{js}": "npm run lint:fix"
   },
   "author": "naveen<hello.nr@icloud.com",
   "license": "MIT"

@@ -1,0 +1,4 @@
+.github
+.husky
+.serverless
+node_modules
