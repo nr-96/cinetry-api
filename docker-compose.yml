@@ -2,7 +2,7 @@ version: "3.8"
 services:
 
   cinetry-localstack:
-    image: localstack/localstack:latest
+    image: localstack/localstack:1.0.0
     container_name: cinetry-localstack
     ports:
       - 4510-4515:4510-4515 #rds | redshift port
