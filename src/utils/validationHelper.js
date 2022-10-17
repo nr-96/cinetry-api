@@ -1,3 +1,5 @@
+const ApplicationError = require('./errorHelper');
+
 const validate = (attributes, validateFunction) => {
   const result = validateFunction().validate(attributes, {
     allowUnknown: true,
@@ -5,7 +7,7 @@ const validate = (attributes, validateFunction) => {
   });
 
   if (result.error) {
-    throw new Error({ message: 'Request validation error' });
+    throw new ApplicationError({ statusCode: 422, message: 'Request validation error' });
   }
 
   return attributes;
