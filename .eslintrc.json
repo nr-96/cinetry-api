@@ -11,6 +11,7 @@
   },
   "rules": {
     "comma-dangle": ["error", "never"],
-    "max-len": ["error", { "code": 120 }]
+    "max-len": ["error", { "code": 160 }],
+    "no-console": ["error", { "allow": ["info", "trace", "error"] }]
   }
 }

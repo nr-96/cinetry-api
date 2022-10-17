@@ -4,6 +4,4 @@
  * @param res
  * @returns Promise
  */
-exports.getList = () => {
-  return {}
-}
+exports.getList = () => ({});

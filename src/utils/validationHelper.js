@@ -7,7 +7,7 @@ const validate = (attributes, validateFunction) => {
   if (result.error) {
     throw new Error({ message: 'Request validation error' });
   }
-  
+
   return attributes;
 };
 

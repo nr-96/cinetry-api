@@ -2,7 +2,7 @@ const defaultResolve = (res, data) => res
   .status(200)
   .json({ data });
 
-const defaultReject = ({ statusCode, type, message } = {}, response) => response.error(statusCode, {
+const defaultReject = (res, { statusCode, type, message } = {}) => res.error(statusCode, {
   type, message
 });
 
@@ -17,6 +17,6 @@ module.exports = async function controller(req, res, params) {
     return defaultResolve(res, data);
   } catch (err) {
     console.error('controller error:', err);
-    return defaultReject(err, res);
+    return defaultReject(res, err);
   }
 };

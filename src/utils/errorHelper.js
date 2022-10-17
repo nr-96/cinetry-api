@@ -13,4 +13,4 @@ function ApplicationError({
 ApplicationError.prototype = Object.create(Error.prototype);
 ApplicationError.prototype.constructor = ApplicationError;
 
-module.exports = ApplicationError
+module.exports = ApplicationError;

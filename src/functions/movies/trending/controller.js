@@ -12,4 +12,3 @@ exports.getList = async (req, res) => {
     service: service.getList
   });
 };
-
