@@ -10,5 +10,6 @@ awslocal ssm put-parameter --name "/local/lambda/common/PG_PORT" --type "String"
 awslocal ssm put-parameter --name "/local/lambda/common/PG_DATABASE" --type "String" --value "$DB_NAME" --overwrite
 
 awslocal ssm put-parameter --name "/local/lambda/common/TMDB_API_KEY" --type "String" --value "$TMDB_API_KEY" --overwrite
+awslocal ssm put-parameter --name "/local/lambda/common/JWT_SECRET" --type "String" --value "$JWT_SECRET" --overwrite
 
 echo "<< Provisioning SSM [status: done]"
