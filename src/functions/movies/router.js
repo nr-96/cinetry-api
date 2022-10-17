@@ -1,3 +1,4 @@
+const authMiddleware = require('../shared/auth');
 const trendingController = require('./trending/controller');
 
 /**
@@ -6,6 +7,8 @@ const trendingController = require('./trending/controller');
  * @returns void
  */
 const router = (api) => {
+  api.use(authMiddleware.verifyToken);
+
   api.get('/trending', trendingController.getList);
 };
 

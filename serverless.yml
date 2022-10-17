@@ -23,12 +23,25 @@ provider:
     PG_PASSWORD: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_PASSWORD}
     PG_PORT: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_PORT}
     PG_DATABASE: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_DATABASE}      
-    TMDB_API_KEY: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/TMDB_API_KEY}      
+    TMDB_API_KEY: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/TMDB_API_KEY}  
+    JWT_SECRET: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/JWT_SECRET}  
 
 plugins:
   - serverless-localstack
 
 functions:
+  auth:
+    handler: src/entry/handler.auth
+    events:
+      - httpApi:
+          path: /auth/{proxy+}
+          method: any
+  users:
+    handler: src/entry/handler.users
+    events:
+      - httpApi:
+          path: /users/{proxy+}
+          method: any
   movies:
     handler: src/entry/handler.movies
     events:

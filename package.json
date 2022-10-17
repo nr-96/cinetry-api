@@ -18,9 +18,10 @@
   },
   "dependencies": {
     "joi": "^17.6.3",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
     "lambda-api": "^0.11.2",
-    "node-fetch": "^3.2.10",
+    "node-fetch": "^2.6.7",
     "pg": "^8.8.0"
   },
   "devDependencies": {
