@@ -1,0 +1,18 @@
+# package directories
+node_modules
+
+# Serverless directories
+.serverless
+
+# esbuild directories
+.esbuild
+
+#misc
+.env
+.localstack.env
+.vscode
+
+.cache/*
+!.cache/.gitkeep
+.cache-demo/*
+!.cache-de,p/.gitkeep

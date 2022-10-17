@@ -1,0 +1,47 @@
+service: cinetry-api
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: demo
+  region: eu-west-1
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'lambda:InvokeFunction'
+        - 'lambda:InvokeAsync'
+        - 'logs:CreateLogGroup'
+        - 'logs:CreateLogStream'
+        - 'logs:PutLogEvents'
+        - 'ssm:*'
+      Resource:
+        - '*'
+  environment:
+    PG_HOST: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_HOST}
+    PG_USER: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_USER}
+    PG_PASSWORD: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_PASSWORD}
+    PG_PORT: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_PORT}
+    PG_DATABASE: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/PG_DATABASE}      
+    TMDB_API_KEY: ${ssm:/${opt:stage, self:provider.stage}/lambda/common/TMDB_API_KEY}      
+
+plugins:
+  - serverless-localstack
+
+functions:
+  movies:
+    handler: src/entry/handler.movies
+    events:
+      - httpApi:
+          path: /movies/{proxy+}
+          method: any
+
+custom:
+  localstack:
+    debug: true
+    stages:
+      - local
+    lambda:
+      mountCode: true
+    docker:
+      sudo: true

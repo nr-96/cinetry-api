@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+
+  cinetry-localstack:
+    environment:
+      - PERSISTENCE=1
+      - PERSIST_ALL=1
+      - LAMBDA_EXECUTOR=docker-reuse
+      - LAMBDA_STAY_OPEN_MODE=0
+    volumes:
+      - .cache/localstack:/var/lib/localstack

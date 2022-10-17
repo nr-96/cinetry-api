@@ -1,0 +1,23 @@
+{
+  "name": "cinetry-api",
+  "version": "1.0.0",
+  "scripts": {
+    "ls:deploy": "serverless deploy --stage local --verbose"
+  },
+  "engines": {
+    "node": ">=16.0"
+  },
+  "dependencies": {
+    "joi": "^17.6.3",
+    "knex": "^2.3.0",
+    "lambda-api": "^0.11.2",
+    "node-fetch": "^3.2.10",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.0.0",
+    "serverless-localstack": "^1.0.1"
+  },
+  "author": "naveen<hello.nr@icloud.com",
+  "license": "MIT"
+}

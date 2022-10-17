@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+
+  cinetry-localstack:
+    image: localstack/localstack:latest
+    container_name: cinetry-localstack
+    ports:
+      - 4510-4515:4510-4515 #rds | redshift port
+      - 4566:4566           #localstack port
+    env_file:
+      - .localstack.env
+    environment:
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=eu-west-1
+      - LAMBDA_REMOTE_DOCKER=0
+      - LAMBDA_DOCKER_NETWORK=cinetrynet
+      - LAMBDA_DOCKER_FLAGS=-e RUNTIME_ENV=localstack
+      - REQUIRE_PRO=1
+      - RUNTIME_ENV=localstack
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .provision:/var/scripts
+      - .provision/localstack.sh:/docker-entrypoint-initaws.d/localstack.sh
+      - ./:/var/workspace
+    networks:
+      - cinetrynet
+
+networks:
+  cinetrynet:
+    external: true
