@@ -10,7 +10,7 @@ const discoverController = require('./discover/controller');
 const router = (api) => {
   api.use(authMiddleware.verifyToken);
 
-  api.get('/trending', trendingController.getList);
+  api.get('/trending', trendingController.list);
 
   api.get('/list', discoverController.list);
   api.get('/:movie_id', discoverController.details);

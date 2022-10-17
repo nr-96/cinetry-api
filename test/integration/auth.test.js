@@ -3,7 +3,7 @@ const authService = require('../../src/functions/auth/service');
 const eventAdapter = require('../adapter/event');
 
 describe('integration > auth', () => {
-  const token = undefined;
+  let token;
 
   it('should login successfully with default user', async () => {
     const { event, context } = eventAdapter.getLambdaURLEvent({
@@ -20,6 +20,8 @@ describe('integration > auth', () => {
     const body = JSON.parse(result.body);
     expect(body).toHaveProperty('data');
     expect(body.data).toBeTruthy();
+
+    token = body.data;
   });
 
   it('should return user when token verified successfully', () => {

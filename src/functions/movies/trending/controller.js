@@ -1,4 +1,5 @@
 const superController = require('../../controller');
+const validator = require('./validator');
 const service = require('./service');
 
 /**
@@ -7,8 +8,9 @@ const service = require('./service');
  * @param res
  * @returns Promise
  */
-exports.getList = async (req, res) => {
+exports.list = async (req, res) => {
   await superController(req, res, {
-    service: service.getList
+    validator: validator.list,
+    service: service.list
   });
 };

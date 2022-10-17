@@ -6,7 +6,7 @@ const apiHelper = require('../../../utils/apiHelper');
  * @param res
  * @returns Promise
  */
-exports.getList = async () => {
-  const trendingMovies = await apiHelper.makeTMDBRequest({ section: 'trending/movie/week', queryParams: { page: 2, maximum: 50 } });
+exports.list = async (queryParams) => {
+  const trendingMovies = await apiHelper.makeTMDBRequest({ section: 'trending/movie/week', queryParams });
   return trendingMovies;
 };

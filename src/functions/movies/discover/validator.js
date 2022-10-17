@@ -6,7 +6,6 @@ const { clean, validate } = require('../../../utils/validationHelper');
 /**
  * Joi.Validator to validate discover-movies:list
  * @param {object} req
- * @returns attributes|ApplicationError
  */
 exports.list = (req) => {
   const {
