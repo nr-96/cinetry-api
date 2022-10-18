@@ -1,6 +1,17 @@
-const defaultResolve = (res, data) => res
-  .status(200)
-  .json({ data });
+const defaultResolve = (res, result) => {
+  const formattedResult = {};
+
+  if (result.data && result.meta) {
+    formattedResult.data = result.data;
+    formattedResult.meta = result.meta;
+  } else {
+    formattedResult.data = result;
+  }
+
+  return res
+    .status(200)
+    .json(formattedResult);
+};
 
 const defaultReject = (res, { statusCode, type, message } = {}) => res.error(statusCode, {
   type, message

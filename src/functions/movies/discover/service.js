@@ -15,7 +15,13 @@ exports.list = async (queryParams) => {
     movieResult = await apiHelper.makeTMDBRequest({ section: 'discover/movie', queryParams });
   }
 
-  return movieResult;
+  return {
+    data: movieResult.results,
+    meta: {
+      page: movieResult.page,
+      total_pages: movieResult.total_pages
+    }
+  };
 };
 
 /**

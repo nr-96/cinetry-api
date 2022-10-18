@@ -32,11 +32,11 @@ describe('integration > movies > TMDB-API', () => {
 
       const body = JSON.parse(result.body);
       expect(body).toHaveProperty('data');
-      expect(body.data).toHaveProperty('page');
-      expect(body.data).toHaveProperty('results');
+      expect(body).toHaveProperty('meta');
+      expect(body.meta).toHaveProperty('page');
 
-      expect(body.data.page).toBe(1);
-      expect(Array.isArray(body.data.results)).toBeTruthy();
+      expect(Array.isArray(body.data)).toBeTruthy();
+      expect(body.meta.page).toBe(1);
     }
     {
       const { event, context } = eventAdapter.getLambdaURLEvent({
@@ -55,11 +55,11 @@ describe('integration > movies > TMDB-API', () => {
 
       const body = JSON.parse(result.body);
       expect(body).toHaveProperty('data');
-      expect(body.data).toHaveProperty('page');
-      expect(body.data).toHaveProperty('results');
+      expect(body).toHaveProperty('meta');
+      expect(body.meta).toHaveProperty('page');
 
-      expect(body.data.page).toBe(2);
-      expect(Array.isArray(body.data.results)).toBeTruthy();
+      expect(Array.isArray(body.data)).toBeTruthy();
+      expect(body.meta.page).toBe(2);
     }
   });
 
@@ -83,11 +83,10 @@ describe('integration > movies > TMDB-API', () => {
 
     const body = JSON.parse(result.body);
     expect(body).toHaveProperty('data');
-    expect(body.data).toHaveProperty('page');
-    expect(body.data).toHaveProperty('results');
+    expect(body).toHaveProperty('meta');
+    expect(body.meta).toHaveProperty('page');
 
-    expect(Array.isArray(body.data.results)).toBeTruthy();
-
+    expect(Array.isArray(body.data)).toBeTruthy();
     // ToDo: validate values of deep level
   });
 
@@ -109,5 +108,273 @@ describe('integration > movies > TMDB-API', () => {
     const body = JSON.parse(result.body);
     expect(body).toHaveProperty('data');
     expect(body.data.id).toBe(505642);
+  });
+});
+
+describe('integration > movies > interaction:favourites', () => {
+  let token;
+  const movieId = 616820;
+
+  beforeAll(async () => {
+    const { event, context } = eventAdapter.getLambdaURLEvent({
+      method: 'POST',
+      service: 'auth',
+      path: 'login'
+    });
+
+    const result = await authEntry(event, context);
+    token = JSON.parse(result.body)?.data;
+  });
+
+  it('should add a movie as user-favourite', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'POST',
+        service: 'movies',
+        path: 'user/favourite',
+        body: { movie_id: movieId },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body.data.message).toBe('Movie is marked as favourite');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'POST',
+        service: 'movies',
+        path: 'user/favourite',
+        body: { movie_id: movieId },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(400);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error.message).toBe('The movie is already in favourites list');
+    }
+  });
+
+  it('should unlist a movie from user-favourite', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'DELETE',
+        service: 'movies',
+        path: `user/favourite/${movieId}`,
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body.data.message).toBe('Movie is unlisted from favourite');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'DELETE',
+        service: 'movies',
+        path: `user/favourite/${movieId}`,
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(400);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error.message).toBe('The movie is not listed in favourites');
+    }
+  });
+
+  it('should list user-favourite movies', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'GET',
+        service: 'movies',
+        path: 'user/favourite/list',
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body).toHaveProperty('meta');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'GET',
+        service: 'movies',
+        path: 'user/favourite/list',
+        queryString: 'details=true',
+        queryParams: { details: 'true' },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body).toHaveProperty('meta');
+    }
+  });
+});
+
+describe('integration > movies > interaction:watch-later', () => {
+  let token;
+  const movieId = 616820;
+
+  beforeAll(async () => {
+    const { event, context } = eventAdapter.getLambdaURLEvent({
+      method: 'POST',
+      service: 'auth',
+      path: 'login'
+    });
+
+    const result = await authEntry(event, context);
+    token = JSON.parse(result.body)?.data;
+  });
+
+  it('should add a movie as user-favourite', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'POST',
+        service: 'movies',
+        path: 'user/watch-later',
+        body: { movie_id: movieId },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body.data.message).toBe('Movie is marked as watch-later');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'POST',
+        service: 'movies',
+        path: 'user/watch-later',
+        body: { movie_id: movieId },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(400);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error.message).toBe('The movie is already in watch-later list');
+    }
+  });
+
+  it('should unlist a movie from user-favourite', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'DELETE',
+        service: 'movies',
+        path: `user/watch-later/${movieId}`,
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body.data.message).toBe('Movie is unlisted from watch-later');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'DELETE',
+        service: 'movies',
+        path: `user/watch-later/${movieId}`,
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(400);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('error');
+      expect(body.error.message).toBe('The movie is not listed in watch-later');
+    }
+  });
+
+  it('should list user-favourite movies', async () => {
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'GET',
+        service: 'movies',
+        path: 'user/watch-later/list',
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body).toHaveProperty('meta');
+    }
+
+    {
+      const { event, context } = eventAdapter.getLambdaURLEvent({
+        method: 'GET',
+        service: 'movies',
+        path: 'user/watch-later/list',
+        queryString: 'details=true',
+        queryParams: { details: 'true' },
+        authorization: token
+      });
+
+      const result = await movieEntry(event, context);
+      expect(result.statusCode).toBe(200);
+      expect(result).toHaveProperty('body');
+      expect(typeof result.body).toBe('string');
+
+      const body = JSON.parse(result.body);
+      expect(body).toHaveProperty('data');
+      expect(body).toHaveProperty('meta');
+    }
   });
 });
