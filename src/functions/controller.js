@@ -13,9 +13,7 @@ const defaultResolve = (res, result) => {
     .json(formattedResult);
 };
 
-const defaultReject = (res, { statusCode, type, message } = {}) => res.error(statusCode, {
-  type, message
-});
+const defaultReject = (res, { statusCode, message } = {}) => res.error(statusCode, { message });
 
 module.exports = async function controller(req, res, params) {
   try {
