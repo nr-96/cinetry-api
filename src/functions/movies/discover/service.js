@@ -1,4 +1,7 @@
 const apiHelper = require('../../../utils/apiHelper');
+const {
+  getGenreList, setUserInteractions, transformGenre, transformMovieSummary
+} = require('../../shared/movies');
 
 /**
  * Service function to discover movies
@@ -6,20 +9,37 @@ const apiHelper = require('../../../utils/apiHelper');
  * @param res
  * @returns Promise
  */
-exports.list = async (queryParams) => {
-  let movieResult = [];
+exports.list = async (params) => {
+  const { auth, ...queryParams } = params;
 
+  const genresPromise = getGenreList();
+  let moviesPromise;
   if (queryParams.query) {
-    movieResult = await apiHelper.makeTMDBRequest({ section: 'search/movie', queryParams });
+    moviesPromise = apiHelper.makeTMDBRequest({ section: 'search/movie', queryParams });
   } else {
-    movieResult = await apiHelper.makeTMDBRequest({ section: 'discover/movie', queryParams });
+    moviesPromise = apiHelper.makeTMDBRequest({ section: 'discover/movie', queryParams });
   }
+  const [genreData, data] = await Promise.all([genresPromise, moviesPromise]);
+
+  const discoverMovies = data.results
+    .map((movie) => {
+      const { genre_ids: ids, ...summary } = transformMovieSummary(movie);
+      const genre = transformGenre(genreData, ids);
+
+      return {
+        ...summary,
+        genre
+      };
+    });
+
+  const interactionPromises = discoverMovies.map((movie) => setUserInteractions(auth.user, movie));
+  const formattedMovies = await Promise.all(interactionPromises);
 
   return {
-    data: movieResult.results,
+    data: formattedMovies,
     meta: {
-      page: movieResult.page,
-      total_pages: movieResult.total_pages
+      page: data.page,
+      total_pages: data.total_pages
     }
   };
 };
