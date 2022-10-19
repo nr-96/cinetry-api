@@ -22,6 +22,10 @@ module.exports = async function controller(req, res, params) {
       payload = await params.validator(req);
     }
 
+    if (req.user) {
+      payload.auth = { user: req.user };
+    }
+
     const data = await params.service(payload);
     return defaultResolve(res, data);
   } catch (err) {

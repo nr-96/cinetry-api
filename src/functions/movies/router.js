@@ -10,7 +10,6 @@ const interactionController = require('./interaction/controller');
  */
 const router = (api) => {
   api.options('/*', (_, res) => res.cors().send({}));
-
   api.use(authMiddleware.verifyToken);
 
   api.get('/trending', trendingController.list);
