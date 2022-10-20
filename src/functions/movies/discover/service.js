@@ -54,3 +54,14 @@ exports.details = async ({ movie_id: movieId }) => {
   const movieDetails = await apiHelper.makeTMDBRequest({ section: `movie/${movieId}` });
   return movieDetails;
 };
+
+/**
+ * Service function to get movie details
+ * @param req
+ * @param res
+ * @returns Promise
+ */
+exports.listGenres = async () => {
+  const data = await apiHelper.makeTMDBRequest({ section: 'genre/movie/list' });
+  return data.genres;
+};

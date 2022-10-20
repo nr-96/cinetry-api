@@ -1,5 +1,5 @@
 const {
-  NODE_ENV, PG_HOST, PG_USER, PG_PASSWORD, PG_PORT, PG_DATABASE
+  PG_HOST, PG_USER, PG_PASSWORD, PG_PORT, PG_DATABASE
 } = process.env;
 
 const connection = {
@@ -9,7 +9,7 @@ const connection = {
   },
   pool: {
     min: 0,
-    max: NODE_ENV === 'test' ? 1 : 10
+    max: 1
   },
   migrations: {
     tableName: 'knex_migrations',

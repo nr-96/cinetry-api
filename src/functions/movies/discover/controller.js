@@ -27,3 +27,15 @@ exports.details = async (req, res) => {
     service: service.details
   });
 };
+
+/**
+ * Controller function to get genres
+ * @param req
+ * @param res
+ * @returns Promise
+ */
+exports.listGenres = async (req, res) => {
+  await superController(req, res, {
+    service: service.listGenres
+  });
+};

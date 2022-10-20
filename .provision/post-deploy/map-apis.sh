@@ -32,7 +32,6 @@ map_apiv2 () {
       # Domain Specific Configurations
       if [ "$DOMAIN_NAME" = "cinetry-api.localhost.localstack.cloud" ];
         then
-          RESOURCE_ID=$(awslocal apigateway get-resources --rest-api-id $API_ID | jq -c '.items[] | select(.path == "/v1/{proxy+}")' | jq -r .id)
           awslocal apigatewayv2 update-api --api-id $API_ID --cors-configuration AllowOrigins="http://cinetry-client.localhost.localstack.cloud:3000"
       fi 
   fi

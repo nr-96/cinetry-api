@@ -14,6 +14,8 @@ const router = (api) => {
 
   api.get('/trending', trendingController.list);
 
+  api.get('/genre/list', discoverController.listGenres);
+
   api.get('/list', discoverController.list);
   api.get('/:movie_id', discoverController.details);
 
