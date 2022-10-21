@@ -1,5 +1,7 @@
 const authService = require('../auth/service');
 
+const { CLIENT_ENDPOINT } = process.env;
+
 /**
  * Middleware to verify JWT
  */
@@ -25,7 +27,7 @@ exports.cors = (_, res, next) => {
     headers: 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Transaction-ID'
   });
 
-  res.header('Access-Control-Allow-Origin', 'http://cinetry-client.localhost.localstack.cloud:3000');
+  res.header('Access-Control-Allow-Origin', CLIENT_ENDPOINT);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Expose-Headers', 'Authorization');
 

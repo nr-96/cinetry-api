@@ -10,5 +10,6 @@ awslocal ssm put-parameter --name "/local/lambda/common/PG_DATABASE" --type "Str
 
 awslocal ssm put-parameter --name "/local/lambda/common/TMDB_API_KEY" --type "String" --value "$TMDB_API_KEY" --overwrite
 awslocal ssm put-parameter --name "/local/lambda/common/JWT_SECRET" --type "String" --value "$JWT_SECRET" --overwrite
+awslocal ssm put-parameter --name "/local/lambda/common/CLIENT_ENDPOINT" --type "String" --value "http://cinetry-client.localhost.localstack.cloud:3000" --overwrite
 
 echo "<< Provisioning SSM [status: done]"
