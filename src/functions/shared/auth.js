@@ -1,5 +1,7 @@
 const authService = require('../auth/service');
 
+const { CLIENT_ENDPOINT } = process.env;
+
 /**
  * Middleware to verify JWT
  */
@@ -16,4 +18,18 @@ exports.verifyToken = (req, res, next) => {
   } catch (error) {
     res.error(401, { message: 'Unauthorized' });
   }
+};
+
+exports.cors = (_, res, next) => {
+  // Add default CORS headers for every request
+  res.cors({
+    methods: 'GET, PATCH, POST, PUT, DELETE, OPTIONS',
+    headers: 'Content-Type, Authorization, Content-Length, X-Requested-With, X-Transaction-ID'
+  });
+
+  res.header('Access-Control-Allow-Origin', CLIENT_ENDPOINT);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Expose-Headers', 'Authorization');
+
+  next();
 };

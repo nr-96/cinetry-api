@@ -22,16 +22,13 @@ const buildQueryParams = (attributes, options = {}) => {
  * Helper function to make http request
  * @param options - request payload
  * @param options.method - http method
- * @param options.headers - http headers
  * @param options.uri - endpoint
  */
 const httpRequest = async (options = {}) => {
   const baseOptions = {
-    method: options.method,
-    headers: options.headers
+    method: options.method
   };
 
-  this.uri = options.uri;
   const requestOptions = options.method === 'GET' || options.method === 'DELETE' ? baseOptions : { ...baseOptions, body: options.body };
   const request = await fetch(options.uri, requestOptions);
 
