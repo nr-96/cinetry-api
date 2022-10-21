@@ -35,11 +35,15 @@ exports.list = async (params) => {
   const interactionPromises = discoverMovies.map((movie) => setUserInteractions(auth.user, movie));
   const formattedMovies = await Promise.all(interactionPromises);
 
+  // TMDB-API limitation
+  const totalPages = Number(data.total_pages || 0) > 500
+    ? 500 : Number(data.total_pages || 0);
+
   return {
     data: formattedMovies,
     meta: {
       page: data.page,
-      total_pages: data.total_pages
+      total_pages: totalPages
     }
   };
 };
